@@ -4,6 +4,8 @@ const app = express();
 const pool = require("./db");
 const todoController = require('./controllers/todoController');
 
+
+
 const PORT = process.env.PORT || 5000;
 
 app.use(express.json()); 
@@ -42,4 +44,5 @@ app.delete("/todos/:id", async (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+    
 });

@@ -1,11 +1,12 @@
-const pool = require("../db");
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 
 class TodoService{
 
     async getAll(){
         try{
-            const allTodos = await pool.query("SELECT * FROM todo");
-            return allTodos.rows;
+            const allTodos = await prisma.todo.findMany()
+            return allTodos;
         }
         catch (err) {
             console.error(err.message);
@@ -14,14 +15,12 @@ class TodoService{
 
     async getById(id){
         try{
-            const todo = await pool.query("SELECT * FROM todo WHERE todo_id = $1", [id]);
-            
-            if (todo.rowCount > 0){
-                return todo.rows[0];
-            } else {
-                console.error("Index out of range");
-            }
-
+            const todo = await prisma.todo.findOne({
+                where: {
+                    id: id
+                }
+            })
+            return todo;
         }
         catch (err) {
             console.error(err.message);
@@ -30,7 +29,14 @@ class TodoService{
 
     async updateTodo(description, id){
         try {
-            return pool.query("UPDATE todo SET description = $1 WHERE todo_id = $2", [description, id]);
+            return prisma.todo.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    description: description
+                }
+            })
         } catch (err) {
             console.error(err.message);
         }
@@ -38,8 +44,12 @@ class TodoService{
 
     async createTodo(description){
         try{
-            const newTodo = await pool.query("INSERT INTO todo (description) VALUES ($1) RETURNING *", [description]);
-            return newTodo.rows[0];
+            const newTodo = await prisma.todo.create({
+                data: {
+                    description: description
+                }
+            })
+            return newTodo
         } catch (err) {
             console.error(err.message);
         }
@@ -47,7 +57,11 @@ class TodoService{
 
     async deleteTodo(id){
         try{
-            return pool.query("DELETE FROM todo WHERE todo_id = $1", [id]);
+            return prisma.todo.delete({
+                where: {
+                    id: id
+                }
+            })
         } catch (err) {
             console.error(err.message);
         }
