@@ -1,7 +1,10 @@
+require('dotenv').config()
 const express = require('express');
 const app = express();
 const pool = require("./db");
 const todoController = require('./controllers/todoController');
+
+const PORT = process.env.PORT || 5000;
 
 app.use(express.json()); 
 
@@ -37,6 +40,6 @@ app.delete("/todos/:id", async (req, res) => {
     res.json(response);
 });
 
-app.listen(5000, () => {
-    console.log('Server is running on port 5000');
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
