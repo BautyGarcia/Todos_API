@@ -15,7 +15,7 @@ class TodoService{
 
     async getById(id){
         try{
-            const todo = await prisma.todo.findOne({
+            const todo = await prisma.todo.findFirst({
                 where: {
                     id: id
                 }
